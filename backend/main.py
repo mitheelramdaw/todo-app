@@ -1,109 +1,134 @@
-from fastapi import FastAPI, HTTPException
+
+# FastAPI To-Do Backend (Final Docker-Ready Version)
+
+
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
-# ------------------------------------------------------
-# 1. Initialize the FastAPI app
-# ------------------------------------------------------
-app = FastAPI()
 
-# ------------------------------------------------------
-# 2. Enable CORS so React frontend can connect
-# ------------------------------------------------------
+# App initialisation
+
+app = FastAPI(title="FastAPI To-Do API", version="1.0")
+
+
+# CORS (React frontend access)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],           # You can later change this to ["http://localhost:5173"]
+    allow_origins=["*"],  # later I can restrict to ["http://localhost:5173"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ------------------------------------------------------
-# 3. Database setup (SQLite)
-# ------------------------------------------------------
+
+# Database setup (SQLite for now)
+
 DATABASE_URL = "sqlite:///./todos.db"
+
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# ------------------------------------------------------
-# 4. SQLAlchemy Todo model
-# ------------------------------------------------------
+
+
+# Database Model
+
 class Todo(Base):
     __tablename__ = "todos"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     completed = Column(Boolean, default=False)
 
+
 Base.metadata.create_all(bind=engine)
 
-# ------------------------------------------------------
-# 5. Pydantic Schema (for request/response)
-# ------------------------------------------------------
-class TodoSchema(BaseModel):
+
+
+#  Pydantic Schemas
+
+class TodoBase(BaseModel):
     title: str
     completed: bool = False
 
+
+class TodoCreate(TodoBase):
+    pass
+
+
+class TodoResponse(TodoBase):
+    id: int
+
     class Config:
-        from_attributes = True  # ✅ Pydantic v2 replacement for orm_mode
+        from_attributes = True  #  Pydantic v2 replacement for orm_mode
 
-# ------------------------------------------------------
-# 6. CRUD API routes
-# ------------------------------------------------------
 
-# Read all todos
-@app.get("/todos", response_model=List[TodoSchema])
-def read_todos():
+
+# Dependency (DB session)
+
+def get_db():
     db = SessionLocal()
-    todos = db.query(Todo).all()
-    db.close()
-    return todos
-
-# Create a new todo
-@app.post("/todos", response_model=TodoSchema)
-def create(todo: TodoSchema):
-    db = SessionLocal()
-    db_todo = Todo(title=todo.title, completed=todo.completed)
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    db.close()
-    return db_todo
-
-# Update a todo
-@app.put("/todos/{todo_id}")
-def update(todo_id: int, todo: TodoSchema):
-    db = SessionLocal()
-    db_todo = db.query(Todo).get(todo_id)
-    if not db_todo:
+    try:
+        yield db
+    finally:
         db.close()
-        raise HTTPException(status_code=404, detail="Todo not found")
-    db_todo.title = todo.title
-    db_todo.completed = todo.completed
-    db.commit()
-    db.close()
-    return {"message": "Updated successfully"}
 
-# Delete a todo
+
+
+#  CRUD Routes
+
+
+@app.get("/todos", response_model=List[TodoResponse])
+def get_todos(db: Session = Depends(get_db)):
+    return db.query(Todo).all()
+
+
+@app.post("/todos", response_model=TodoResponse)
+def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
+    new_todo = Todo(title=todo.title, completed=todo.completed)
+    db.add(new_todo)
+    db.commit()
+    db.refresh(new_todo)
+    return new_todo
+
+
+@app.put("/todos/{todo_id}", response_model=TodoResponse)
+def update_todo(todo_id: int, updated: TodoCreate, db: Session = Depends(get_db)):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    todo.title = updated.title
+    todo.completed = updated.completed
+    db.commit()
+    db.refresh(todo)
+    return todo
+
+
 @app.delete("/todos/{todo_id}")
-def delete(todo_id: int):
-    db = SessionLocal()
-    db_todo = db.query(Todo).get(todo_id)
-    if not db_todo:
-        db.close()
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if not todo:
         raise HTTPException(status_code=404, detail="Todo not found")
-    db.delete(db_todo)
+    db.delete(todo)
     db.commit()
-    db.close()
-    return {"message": "Deleted successfully"}
+    return {"message": f"Todo '{todo.title}' deleted successfully"}
 
-# ------------------------------------------------------
-# 7. Root endpoint (simple message)
-# ------------------------------------------------------
+
+
+#  Root + Startup Logs
+
 @app.get("/")
 def root():
-    return {"message": "FastAPI To-Do backend running successfully!"}
+    return {"message": "✅ FastAPI To-Do backend running successfully!"}
+
+
+@app.on_event("startup")
+def startup_event():
+    print("⚙️  Backend (FastAPI) is starting...")
+    print("📖  Swagger Docs: http://localhost:8000/docs")
+    print("----------------------------------------------------")
