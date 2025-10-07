@@ -1,5 +1,5 @@
-# ----------- Backend Dockerfile -----------
-FROM python:3.11
+# ----------- Backend Dockerfile (with clickable startup links) -----------
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
@@ -13,8 +13,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY . .
 
+# Add a startup message script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Expose FastAPI port
 EXPOSE 8000
 
-# Run FastAPI app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
