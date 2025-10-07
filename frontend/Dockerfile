@@ -1,28 +1,22 @@
-# ----------- Frontend Dockerfile (Stable + Rollup Fix) -----------
-# Use Node 20 (required by Vite 6+)
-FROM node:20.19.0
+# ---------- Frontend Dockerfile (build + Nginx serve) ----------
+# ---- Build stage ----
+FROM node:20.19.0 AS build
 
-# Set working directory inside the container
 WORKDIR /app
-
-# Copy package manifests first (for better Docker caching)
 COPY package*.json ./
+RUN npm ci --include=dev
 
-# Clean npm cache and force fresh install
-RUN npm cache clean --force
-RUN npm install --force
-
-# Explicitly reinstall correct Rollup binary for Linux
-RUN npm install rollup@latest --force
-
-# Copy the rest of the frontend code
 COPY . .
+RUN npm run build     # creates /app/dist
 
-# Build the production-ready bundle (optional but safe)
-RUN npm run build
+# ---- Serve stage ----
+FROM nginx:stable-alpine
 
-# Expose Vite development server port
-EXPOSE 5173
+# Copy build output to nginx html folder
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Run the Vite development server and allow external connections
-CMD ["npm", "run", "dev", "--", "--host"]
+# Expose HTTP port
+EXPOSE 80
+
+# Default Nginx start command
+CMD ["nginx", "-g", "daemon off;"]

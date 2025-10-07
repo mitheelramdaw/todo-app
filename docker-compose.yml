@@ -1,27 +1,17 @@
-version: "3.8"
-
 services:
   backend:
     build: ./backend
-    container_name: fastapi-backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
     networks:
       - todo-net
 
   frontend:
     build: ./frontend
-    container_name: react-frontend
     ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_URL=http://backend:8000
+      - "5173:80"      # browser → nginx → built React app
     depends_on:
       - backend
-    volumes:
-      - ./frontend:/app
     networks:
       - todo-net
 
