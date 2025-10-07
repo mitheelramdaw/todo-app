@@ -1,4 +1,4 @@
-# ----------- Backend Dockerfile (with clickable startup links) -----------
+# Backend Dockerfile (with clickable startup links) -----------
 FROM python:3.11-slim
 
 # Set working directory

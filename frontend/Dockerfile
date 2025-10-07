@@ -1,21 +1,21 @@
-# ---------- Frontend Dockerfile (build + Nginx serve + startup message) ----------
+# Frontend Dockerfile (build + Nginx serve + startup message) ----------
 
-# ---- Build stage ----
+#  Build stage
 FROM node:20.19.0 AS build
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN npm install
 COPY . .
 RUN npm run build
 
-# ---- Serve stage ----
+# Serve stage
 FROM nginx:stable-alpine
 
 # Copy built React app
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config (to silence logs)
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy startup message script
