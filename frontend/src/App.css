@@ -1,42 +1,133 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* ---------- Background ---------- */
+body {
+  background-image: url("./assets/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* ---------- App Container ---------- */
+.app {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 40px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  color: #f2f2f2;
   text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* ---------- Title ---------- */
+h1 {
+  color: #ffffff;
+  font-size: 2.3rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-@keyframes logo-spin {
+/* ---------- Input + Button ---------- */
+.add-todo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.add-todo input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  color: #333;
+}
+
+.add-todo button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #0078ff;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.add-todo button:hover {
+  background-color: #005fcc;
+}
+
+/* ---------- Todo List ---------- */
+.todo-list {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s ease;
+}
+
+.todo-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.todo-item span {
+  flex: 1;
+  cursor: pointer;
+  color: #e0e0e0;
+  transition: color 0.2s ease;
+}
+
+.todo-item span:hover {
+  color: #61dafb;
+}
+
+.todo-item .completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+/* ---------- Delete Button ---------- */
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #ff6b6b;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+  color: #ff8b8b;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
