@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
+import TodoItem from "./TodoItem";
 
 interface Todo {
   id: number;
@@ -8,7 +9,7 @@ interface Todo {
   completed: boolean;
 }
 
-// Auto-detect correct backend URL
+// Detect correct backend URL (works in Docker & localhost)
 const API_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://localhost:8000/todos"
@@ -20,14 +21,12 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch todos
   useEffect(() => {
     const fetchTodos = async () => {
       try {
         const res = await axios.get(API_URL);
         setTodos(res.data);
-      } catch (err) {
-        console.error("Could not fetch todos:", err);
+      } catch {
         setError("❌ Cannot connect to backend.");
       } finally {
         setLoading(false);
@@ -47,14 +46,14 @@ export default function App() {
     }
   };
 
-  const toggleTodo = async (id: number, completed: boolean, title: string) => {
+  const updateTodo = async (id: number, completed: boolean, title: string) => {
     try {
       await axios.put(`${API_URL.replace("/todos", "")}/todos/${id}`, {
         title,
-        completed: !completed,
+        completed,
       });
       setTodos(
-        todos.map((t) => (t.id === id ? { ...t, completed: !completed } : t))
+        todos.map((t) => (t.id === id ? { ...t, title, completed } : t))
       );
     } catch {
       setError("❌ Failed to update task.");
@@ -85,37 +84,17 @@ export default function App() {
         <button onClick={addTodo}>Add</button>
       </div>
 
-      <ul className="todo-list">
+      <div className="todo-list">
         {todos.length === 0 && !loading && <p>No tasks yet.</p>}
         {todos.map((todo) => (
-          <li
+          <TodoItem
             key={todo.id}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              textDecoration: todo.completed ? "line-through" : "none",
-            }}
-          >
-            <span onClick={() => toggleTodo(todo.id, todo.completed, todo.title)}>
-              {todo.title}
-            </span>
-            <button
-              onClick={() => deleteTodo(todo.id)}
-              style={{
-                background: "crimson",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                padding: "4px 8px",
-              }}
-            >
-              X
-            </button>
-          </li>
+            todo={todo}
+            updateTodo={updateTodo}
+            deleteTodo={deleteTodo}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
