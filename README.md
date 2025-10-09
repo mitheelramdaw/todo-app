@@ -1,22 +1,25 @@
 
 # 📝 Full-Stack To-Do Application
 
+[![Backend Tests (FastAPI)](https://github.com/mitheelramdaw/todo-app/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/mitheelramdaw/todo-app/actions/workflows/backend-tests.yml)
+
 **FastAPI + React (TypeScript) + Docker**
 
-This project is a simple yet complete To-Do list application built as part of a technical practical test.
-It demonstrates a full-stack architecture using **FastAPI** for the backend, **React + TypeScript** for the frontend, and **Docker + Docker Compose** for containerized deployment.
+This project is a simple yet complete **To-Do list application** built as part of a technical practical test.  
+It demonstrates a full-stack architecture using **FastAPI** for the backend, **React + TypeScript** for the frontend,  
+and **Docker Compose** for containerized deployment.
 
 ---
 
 ## 🚀 Features
 
-* ✅ Create, Read, Update, and Delete (CRUD) to-do items
-* ✅ Persistent storage via SQLite
-* ✅ RESTful API with automatic Swagger docs
-* ✅ Modern React frontend served by Nginx
-* ✅ Fully containerized (backend + frontend) with Docker
-* ✅ Pytest test suite for backend endpoints
-* ✅ Simple, clean, and responsive UI
+* ✅ Create, Read, Update, and Delete (CRUD) to-do items  
+* ✅ Persistent storage using SQLite  
+* ✅ RESTful API with automatic Swagger docs  
+* ✅ Modern React frontend (TypeScript + Vite)  
+* ✅ Simple and responsive UI  
+* ✅ GitHub Actions CI/CD for automated backend tests  
+* ✅ Background image with legible styled text  
 
 ---
 
@@ -26,8 +29,9 @@ It demonstrates a full-stack architecture using **FastAPI** for the backend, **R
 | :------------------- | :---------------------------------------- |
 | **Frontend**         | React + TypeScript + Vite + Axios + Nginx |
 | **Backend**          | FastAPI + SQLAlchemy + Pydantic + Uvicorn |
-| **Database**         | SQLite (lightweight local file)           |
-| **Testing**          | Pytest                                    |
+| **Database**         | SQLite (local file)                       |
+| **Testing**          | Pytest + FastAPI TestClient               |
+| **Automation**       | GitHub Actions                            |
 | **Containerization** | Docker & Docker Compose                   |
 
 ---
@@ -35,27 +39,43 @@ It demonstrates a full-stack architecture using **FastAPI** for the backend, **R
 ## 🏗️ Project Structure
 
 ```
+
 todo-app/
+├── .github/
+│ └── workflows/
+│ └── backend-tests.yml
+│
 ├── backend/
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   ├── todos.db
-│   └── test_main.py
+│ ├── main.py
+│ ├── test_main.py
+│ ├── requirements.txt
+│ ├── Dockerfile
+│ ├── entrypoint.sh
+│ └── todos.db
 │
 ├── frontend/
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── TodoItem.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   └── package.json
+│ ├── src/
+│ │ ├── App.tsx
+│ │ ├── TodoItem.tsx
+│ │ ├── main.tsx
+│ │ ├── index.css
+│ │ └── assets/
+│ ├── public/
+│ │ └── vite.svg
+│ ├── Dockerfile
+│ ├── nginx.conf
+│ ├── package.json
+│ ├── tsconfig.json
+│ ├── vite.config.ts
+│ ├── entrypoint.sh
+│ └── eslint.config.js
 │
 ├── docker-compose.yml
-└── README.md
-```
+├── README.md
+├── todos.db
+└── Submission Videos/
+
+````
 
 ---
 
@@ -63,14 +83,13 @@ todo-app/
 
 ### 1️⃣ Prerequisites
 
-Make sure you have the following installed:
-
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-* (Optional) Python 3.11 + Node 20 if you want to run locally
+Make sure you have:
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- (Optional) Python 3.11 + Node 20 for running locally
 
 ---
 
-### 2️⃣ Run with Docker
+### 2️⃣ Run the App with Docker
 
 ```bash
 # Stop any running containers first
@@ -79,9 +98,9 @@ docker-compose down
 # Build all images
 docker-compose build --no-cache
 
-# Run the stack
+# Run the full stack
 docker-compose up
-```
+````
 
 Once running:
 
@@ -92,12 +111,14 @@ Once running:
 
 ---
 
-### 3️⃣ Run Backend Tests (Locally)
+### 3️⃣ Run Backend Tests Locally
 
 ```bash
 cd backend
 pytest -v
 ```
+
+All backend tests are automatically executed on **GitHub Actions** for every push or pull request to the `main` branch.
 
 ---
 
@@ -111,49 +132,44 @@ pytest -v
 | `DELETE` | `/todos/{id}` | Delete a to-do           |
 | `GET`    | `/`           | Root status check        |
 
-The API automatically serves Swagger UI at `/docs`.
+Swagger UI available at `/docs`.
 
 ---
 
 ## 🎨 Frontend UI
 
-* Responsive React interface built with Vite + TypeScript
-* Click a task to toggle its completion
+* Clean and responsive React interface
+* Click a task to mark it complete / incomplete
 * Delete tasks instantly
-* Styled for readability over a background image
-* Connected directly to the FastAPI backend
+* Background image with readable text overlay
+* Built using Vite + TypeScript for fast builds
 
 ---
 
-## 🧪 Testing
+## 🧪 Continuous Integration (CI)
 
-Backend tests use `pytest` and FastAPI’s `TestClient` to validate:
+Each push automatically triggers a **GitHub Actions workflow** that:
 
-* `/` root endpoint
-* CRUD operations for `/todos`
-
-To run all tests manually:
-
-```bash
-cd backend
-pytest -v
-```
+1. Sets up a Python 3.11 environment
+2. Installs backend dependencies
+3. Runs all `pytest` tests inside `backend/`
+4. Marks the commit ✅ **Passed** or ❌ **Failed**
 
 ---
 
 ## 🧰 Development Tips
 
-* If you change dependencies, rebuild images:
+* Rebuild if dependencies change:
 
   ```bash
   docker-compose build --no-cache
   ```
-* To restart containers:
+* Restart everything:
 
   ```bash
   docker-compose down && docker-compose up
   ```
-* Logs:
+* Check logs:
 
   ```bash
   docker-compose logs -f
@@ -161,38 +177,52 @@ pytest -v
 
 ---
 
-## 💡 Future Improvements (Optional Enhancements)
+## 💡 Optional Enhancements
 
 * Add frontend filtering (All / Active / Completed)
 * Add search functionality
 * Add authentication / user accounts
-* Deploy to Render / Vercel / Fly.io
+* Deploy on Render / Vercel / Fly.io
 
 ---
 
+## 🧠 CI/CD Status
 
-## Add task / Landing
-<img width="2559" height="1399" alt="image" src="https://github.com/user-attachments/assets/69548275-c028-42a8-bcec-9fb10645e810" />
+The badge at the top of this README automatically updates
+whenever tests pass or fail in GitHub Actions.
 
-## Toggled done task
-<img width="2559" height="1397" alt="image" src="https://github.com/user-attachments/assets/61d300fd-4c25-489e-b345-546fe2f47a47" />
+✅ Green = all backend tests passing
+❌ Red = some tests failed
 
-## Active
-<img width="2559" height="1393" alt="image" src="https://github.com/user-attachments/assets/c2e542f7-e008-4a3c-9ca6-9c416dfba4bb" />
+---
 
-## Completed
-<img width="2559" height="1395" alt="image" src="https://github.com/user-attachments/assets/72737621-7d3b-408b-b716-43cb9566ab59" />
+## 📸 Screenshots
 
-## Deleted
-<img width="2555" height="1402" alt="image" src="https://github.com/user-attachments/assets/7bfca4ca-5e6c-4b29-b6d7-a1172755bf57" />
+### Add Task / Landing
+
+![Add task view](https://github.com/user-attachments/assets/69548275-c028-42a8-bcec-9fb10645e810)
+
+### Toggle Task
+
+![Completed task](https://github.com/user-attachments/assets/61d300fd-4c25-489e-b345-546fe2f47a47)
+
+### Active
+
+![Active tasks](https://github.com/user-attachments/assets/c2e542f7-e008-4a3c-9ca6-9c416dfba4bb)
+
+### Completed
+
+![Completed tasks](https://github.com/user-attachments/assets/72737621-7d3b-408b-b716-43cb9566ab59)
+
+### Deleted
+
+![Deleted tasks](https://github.com/user-attachments/assets/7bfca4ca-5e6c-4b29-b6d7-a1172755bf57)
+
+---
 
 ## 👨‍💻 Author
 
 **Mitheel Ramdaw**
 📧 [mitheelramdaw@gmail.com](mailto:mitheelramdaw@gmail.com)
-🧠 Built using FastAPI and React
-
-
-
-
-
+🧠 Built with FastAPI & React
+🚀 Fully tested with GitHub Actions
