@@ -1,4 +1,4 @@
-/* Background */
+/* ---------- Background ---------- */
 body {
   background-image: url("./assets/bg.jpg");
   background-size: cover;
@@ -13,7 +13,7 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
-/* App Container */
+/* ---------- App Container ---------- */
 .app {
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(12px);
@@ -27,7 +27,7 @@ body {
   animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Title */
+/* ---------- Title ---------- */
 h1 {
   color: #ffffff;
   font-size: 2.3rem;
@@ -35,7 +35,7 @@ h1 {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-/* Input + Button */
+/* ---------- Input + Button ---------- */
 .add-todo {
   display: flex;
   justify-content: center;
@@ -70,7 +70,42 @@ h1 {
   background-color: #005fcc;
 }
 
-/* Todo List */
+/* ---------- Filters ---------- */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filters button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #f2f2f2;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.filters button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.filters button.active {
+  background: #0078ff;
+  color: white;
+  font-weight: bold;
+}
+
+/* ---------- Task Counter ---------- */
+.counter {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin-bottom: 15px;
+}
+
+/* ---------- Todo List ---------- */
 .todo-list {
   text-align: left;
   margin-top: 20px;
@@ -105,7 +140,7 @@ h1 {
   color: #999;
 }
 
-/* Delete Button */
+/* ---------- Delete Button ---------- */
 .delete-btn {
   background: transparent;
   border: none;
@@ -120,7 +155,7 @@ h1 {
   color: #ff8b8b;
 }
 
-/* Animations */
+/* ---------- Animations ---------- */
 @keyframes fadeIn {
   from {
     opacity: 0;
