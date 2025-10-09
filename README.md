@@ -170,8 +170,29 @@ pytest -v
 
 ---
 
+
+## Add task / Landing
+<img width="2559" height="1399" alt="image" src="https://github.com/user-attachments/assets/69548275-c028-42a8-bcec-9fb10645e810" />
+
+## Toggled done task
+<img width="2559" height="1397" alt="image" src="https://github.com/user-attachments/assets/61d300fd-4c25-489e-b345-546fe2f47a47" />
+
+## Active
+<img width="2559" height="1393" alt="image" src="https://github.com/user-attachments/assets/c2e542f7-e008-4a3c-9ca6-9c416dfba4bb" />
+
+## Completed
+<img width="2559" height="1395" alt="image" src="https://github.com/user-attachments/assets/72737621-7d3b-408b-b716-43cb9566ab59" />
+
+## Deleted
+<img width="2555" height="1402" alt="image" src="https://github.com/user-attachments/assets/7bfca4ca-5e6c-4b29-b6d7-a1172755bf57" />
+
 ## 👨‍💻 Author
 
 **Mitheel Ramdaw**
 📧 [mitheelramdaw@gmail.com](mailto:mitheelramdaw@gmail.com)
 🧠 Built using FastAPI and React
+
+
+
+
+
