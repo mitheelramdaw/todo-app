@@ -175,16 +175,6 @@ Each push automatically triggers a **GitHub Actions workflow** that:
   docker-compose logs -f
   ```
 
----
-
-## 💡 Optional Enhancements
-
-* Add frontend filtering (All / Active / Completed)
-* Add search functionality
-* Add authentication / user accounts
-* Deploy on Render / Vercel / Fly.io
-
----
 
 ## 🧠 CI/CD Status
 
